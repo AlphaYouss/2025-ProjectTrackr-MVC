@@ -1,0 +1,51 @@
+﻿@model ProjectTrackr.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>Create account</h1>
+
+<h4>Register as new user</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @if (TempData["Errors"] != null)
+        {
+            var errors = (string[])TempData["Errors"];
+            <ul class="text-danger">
+                @foreach (var error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        }
+
+        <form asp-action="Register">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="username" class="control-label">Username</label>
+                <input asp-for="username" class="form-control" required type="text"/>
+                <span asp-validation-for="username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="email" class="control-label">E-mail</label>
+                <input asp-for="email" class="form-control" required  type="email"/>
+                <span asp-validation-for="email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="password" class="control-label">Password</label>
+                <input asp-for="password" class="form-control" required type="password" id="password"/>
+                <span asp-for="password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="passwordRepeat" class="control-label">Password repeat</label>
+                <input asp-for="passwordRepeat" class="form-control" required type="password" id="passwordRepeat" />
+                <span asp-for="passwordRepeat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

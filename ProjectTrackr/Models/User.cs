@@ -5,9 +5,9 @@ namespace ProjectTrackr.Models
     public class User
     {
         [Key]
-        public Guid id { get; set; }
+        public Guid id { get; set; } = Guid.NewGuid();
         [Required, MaxLength(20)]
-        public string userName { get; set; }
+        public string username { get; set; }
         [Required, MaxLength(200)]
         public string email { get; set; }
         [Required]

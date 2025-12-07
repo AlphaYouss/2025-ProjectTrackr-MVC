@@ -1,12 +1,37 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|e:\\2025-projecttrackr-mvc\\projecttrackr\\views\\projects\\view.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|solutionrelative:views\\projects\\view.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "View.cshtml",
+              "DocumentMoniker": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Views\\Projects\\View.cshtml",
+              "RelativeDocumentMoniker": "Views\\Projects\\View.cshtml",
+              "ToolTip": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Views\\Projects\\View.cshtml",
+              "RelativeToolTip": "Views\\Projects\\View.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-07T23:47:05.079Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
