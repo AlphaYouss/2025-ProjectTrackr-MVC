@@ -1,4 +1,4 @@
-﻿@model ProjectTrackr.Models.RegisterViewModel
+﻿@model ProjectTrackr.Models.ViewModels.RegisterViewModel
 
 @{
     ViewData["Title"] = "Register";
@@ -10,11 +10,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        @if (TempData["Errors"] != null)
+        @if (TempData["Errors"] is List<string> errors)
         {
-            var errors = (string[])TempData["Errors"];
             <ul class="text-danger">
-                @foreach (var error in errors)
+                @foreach (String error in errors)
                 {
                     <li>@error</li>
                 }

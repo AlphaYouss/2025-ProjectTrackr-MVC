@@ -16,7 +16,6 @@
 {
     <div class="alert alert-info">
         No projects found.
-        <a asp-action="Create">Click here to create your first project.</a>
     </div>
 }
 else
@@ -36,9 +35,8 @@ else
                         </p>
 
                         <ul class="list-unstyled small text-muted mb-3">
-                            <li><strong>ID:</strong> @item.id</li>
+                            <li><strong>Owner:</strong> @item.owner.username (You)</li>
                             <li><strong>Created:</strong> @item.createdAt</li>
-                            <li><strong>Owner:</strong> @item.ownerId</li>
                         </ul>
 
                         <div class="d-flex justify-content-between">
@@ -53,8 +51,12 @@ else
                                 Details
                             </a>
 
-                            <a class="btn btn-sm btn-outline-danger"
-                               asp-action="Delete" asp-route-id="@item.id">
+                            <a href="#"
+                               class="btn btn-sm btn-outline-danger"
+                               data-bs-toggle="modal"
+                               data-bs-target="#deleteModal"
+                               data-project-id="@item.id"
+                               data-project-name="@item.name">
                                 Delete
                             </a>
 
@@ -65,4 +67,24 @@ else
             </div>
         }
     </div>
+}
+
+@await Html.PartialAsync("Delete")
+
+@section Scripts {
+    <script>
+        let deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            let button = event.relatedTarget;
+
+            // Extract project ID and Name
+            let projectId = button.getAttribute('data-project-id');
+            let projectName = button.getAttribute('data-project-name');
+
+            // Set modal content
+            deleteModal.querySelector('#projectName').textContent = projectName || "this project";
+            deleteModal.querySelector('#deleteProjectId').value = projectId;
+        });
+    </script>
 }

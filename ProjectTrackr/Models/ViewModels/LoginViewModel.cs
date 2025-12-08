@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace ProjectTrackr.Models
+namespace ProjectTrackr.Models.ViewModels
 {
     public class LoginViewModel
     {

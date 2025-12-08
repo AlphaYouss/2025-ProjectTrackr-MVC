@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using ProjectTrackr.Models;
+using ProjectTrackr.Models.ViewModels;
 
 namespace ProjectTrackr.Controllers
 {

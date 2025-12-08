@@ -95,6 +95,7 @@ namespace ProjectTrackr.DALs
 
             return user.id;
         }
+
         public DataTable GetUserDetails(User user)
         {
             table = new DataTable();

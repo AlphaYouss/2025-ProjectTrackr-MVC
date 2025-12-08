@@ -54,5 +54,22 @@ namespace ProjectTrackr.Tools
                 return true;
             }
         }
+
+        public bool ValidateStrings(string username)
+        {
+            // Validate strings (mostly letters, 3 min)
+
+            Regex regex = new Regex(@"^(?=.*[a-zA-Z\d].*)[a-zA-Z\d!@#$%&* ]{3,}$");
+            bool isValid = regex.IsMatch(username.Trim());
+
+            if (!isValid)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }

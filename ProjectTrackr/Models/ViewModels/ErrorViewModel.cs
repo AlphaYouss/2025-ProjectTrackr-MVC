@@ -1,4 +1,4 @@
-namespace ProjectTrackr.Models
+namespace ProjectTrackr.Models.ViewModels
 {
     public class ErrorViewModel
     {

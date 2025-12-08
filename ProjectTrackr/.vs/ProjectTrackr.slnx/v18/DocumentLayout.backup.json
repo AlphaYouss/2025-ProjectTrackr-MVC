@@ -3,20 +3,16 @@
   "WorkspaceRootPath": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|e:\\2025-projecttrackr-mvc\\projecttrackr\\views\\projects\\view.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|solutionrelative:views\\projects\\view.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|e:\\2025-projecttrackr-mvc\\projecttrackr\\views\\project\\view.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|solutionrelative:views\\project\\view.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|e:\\2025-projecttrackr-mvc\\projecttrackr\\controllers\\projectscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|solutionrelative:controllers\\projectscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|e:\\2025-projecttrackr-mvc\\projecttrackr\\dals\\activitylogdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|solutionrelative:dals\\activitylogdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|e:\\2025-projecttrackr-mvc\\projecttrackr\\controllers\\registercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|solutionrelative:controllers\\registercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|e:\\2025-projecttrackr-mvc\\projecttrackr\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|solutionrelative:controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|e:\\2025-projecttrackr-mvc\\projecttrackr\\controllers\\projectcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EE5476FB-ABAD-1665-72C3-01D3487376C7}|ProjectTrackr.csproj|solutionrelative:controllers\\projectcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,58 +22,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "View.cshtml",
-              "DocumentMoniker": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Views\\Projects\\View.cshtml",
-              "RelativeDocumentMoniker": "Views\\Projects\\View.cshtml",
-              "ToolTip": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Views\\Projects\\View.cshtml",
-              "RelativeToolTip": "Views\\Projects\\View.cshtml",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAAEUAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-07T23:43:27.04Z",
+              "DocumentIndex": 1,
+              "Title": "ActivityLogDAL.cs",
+              "DocumentMoniker": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\DALs\\ActivityLogDAL.cs",
+              "RelativeDocumentMoniker": "DALs\\ActivityLogDAL.cs",
+              "ToolTip": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\DALs\\ActivityLogDAL.cs",
+              "RelativeToolTip": "DALs\\ActivityLogDAL.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAA0wCsAAAB2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T21:59:02.066Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "LoginController.cs",
-              "DocumentMoniker": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Controllers\\LoginController.cs",
-              "RelativeDocumentMoniker": "Controllers\\LoginController.cs",
-              "ToolTip": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Controllers\\LoginController.cs",
-              "RelativeToolTip": "Controllers\\LoginController.cs",
-              "ViewState": "AgIAAGIAAAAAAAAAAAAuwHcAAAA5AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-07T23:42:49.766Z",
+              "DocumentIndex": 0,
+              "Title": "View.cshtml",
+              "DocumentMoniker": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Views\\Project\\View.cshtml",
+              "RelativeDocumentMoniker": "Views\\Project\\View.cshtml",
+              "ToolTip": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Views\\Project\\View.cshtml",
+              "RelativeToolTip": "Views\\Project\\View.cshtml",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAAD8AAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-08T21:57:26.463Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "RegisterController.cs",
-              "DocumentMoniker": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Controllers\\RegisterController.cs",
-              "RelativeDocumentMoniker": "Controllers\\RegisterController.cs",
-              "ToolTip": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Controllers\\RegisterController.cs",
-              "RelativeToolTip": "Controllers\\RegisterController.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "ProjectController.cs",
+              "DocumentMoniker": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Controllers\\ProjectController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ProjectController.cs",
+              "ToolTip": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Controllers\\ProjectController.cs",
+              "RelativeToolTip": "Controllers\\ProjectController.cs",
+              "ViewState": "AgIAAFUAAAAAAAAAAAD4v+cAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-07T23:42:48.508Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ProjectsController.cs",
-              "DocumentMoniker": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Controllers\\ProjectsController.cs",
-              "RelativeDocumentMoniker": "Controllers\\ProjectsController.cs",
-              "ToolTip": "E:\\2025-ProjectTrackr-MVC\\ProjectTrackr\\Controllers\\ProjectsController.cs",
-              "RelativeToolTip": "Controllers\\ProjectsController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-07T23:42:25.541Z",
+              "WhenOpened": "2025-12-08T21:34:46.11Z",
               "EditorCaption": ""
             }
           ]

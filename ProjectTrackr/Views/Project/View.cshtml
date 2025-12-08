@@ -1,0 +1,82 @@
+﻿@model ProjectTrackr.Models.Project
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>Project Details</h1>
+
+<div>
+    <h4>Project</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">ID</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.id)</dd>
+
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.name)</dd>
+
+        <dt class="col-sm-2">Description</dt>
+        @if (!string.IsNullOrEmpty(Model.description))
+        {
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.description)</dd>
+        }
+        else
+        {
+            <dd class="col-sm-10">-</dd>
+        }
+
+        <dt class="col-sm-2">Created at</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.createdAt)</dd>
+
+        <dt class="col-sm-2">Owner</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.ownerId)</dd>
+    </dl>
+</div>
+
+<hr />
+
+<div>
+    <h4>Tasks</h4>
+    @if (Model.tasks != null && Model.tasks.Any())
+    {
+        <ul class="list-group">
+            @foreach (TaskItem task in Model.tasks)
+            {
+                <li class="list-group-item">
+                    <strong>@task.title</strong> - @task.description
+                    <br />
+                    Created: @task.createdAt
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No tasks for this project.</p>
+    }
+</div>
+
+<hr />
+
+<div>
+    <h4>Activity Logs</h4>
+    <h5>Latest 5 activity logs</h5>
+    @if (Model.activityLogs != null && Model.activityLogs.Any())
+    {
+        <ul class="list-group">
+            @foreach (ActivityLog log in Model.activityLogs)
+            {
+                <li class="list-group-item">
+                    @log.action
+                    <br />
+                    At: @log.createdAt
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No activity logs for this project.</p>
+    }
+</div>

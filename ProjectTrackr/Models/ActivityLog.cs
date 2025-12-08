@@ -8,8 +8,10 @@ namespace ProjectTrackr.Models
         public Guid id { get; set; }
         [Required]
         public string action { get; set; }
+        [Required]
+        [DataType(DataType.DateTime)]
         public DateTime createdAt { get; set; }
-
+        [Required]
         public Guid userId { get; set; }
         public User user { get; set; }
 

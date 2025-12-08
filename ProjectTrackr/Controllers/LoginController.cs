@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ProjectTrackr.Containers;
 using ProjectTrackr.DALs;
 using ProjectTrackr.Models;
+using ProjectTrackr.Models.ViewModels;
 using ProjectTrackr.Tools;
 using System.Data;
 using System.Security.Claims;
@@ -98,12 +98,12 @@ namespace ProjectTrackr.Controllers
             user.createdAt = (DateTime)table.Rows[0]["CreatedAt"];
 
             List<Claim> claims = new List<Claim>
-                {
+            {
                     new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
                     new Claim(ClaimTypes.Name, user.username),
                     new Claim(ClaimTypes.Email, user.email),
                     new Claim("CreatedAt", user.createdAt.ToString())
-                };
+            };
 
             ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -112,12 +112,12 @@ namespace ProjectTrackr.Controllers
                 AllowRefresh = true,
                 ExpiresUtc = DateTime.Now.AddDays(1),
                 IsPersistent = true,
-                RedirectUri = "/Projects/Index"
+                RedirectUri = "/Project/All"
             };
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), properties);
 
-            return RedirectToAction("Index", "Projects");
+            return RedirectToAction("All", "Project");
         }
     }
 }

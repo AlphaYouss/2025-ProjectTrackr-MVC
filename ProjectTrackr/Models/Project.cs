@@ -16,5 +16,6 @@ namespace ProjectTrackr.Models
         public User owner { get; set; }
 
         public ICollection<TaskItem> tasks { get; set; }
+        public ICollection<ActivityLog> activityLogs { get; set; }
     }
 }
