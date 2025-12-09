@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="../Unit_tests/Unit_tests.csproj" Id="3263e07a-84be-4dda-a98f-ab34851ea9a4" />
   <Project Path="ProjectTrackr.csproj" />
 </Solution>
