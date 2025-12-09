@@ -22,6 +22,5 @@ namespace ProjectTrackr.Models.ViewModels
         public TaskStatus status { get; set; } = TaskStatus.ToDo;
         public DateTime createdAt { get; set; } = DateTime.Now;
         public Guid projectId { get; set; }
-        public Project project { get; set; }
     }
 }

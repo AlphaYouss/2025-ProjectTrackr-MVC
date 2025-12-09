@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjectTrackr.Containers;
 using ProjectTrackr.DALs;
-using ProjectTrackr.Interfaces;
 using ProjectTrackr.Models;
 using ProjectTrackr.Models.ViewModels;
 using ProjectTrackr.Tools;
 using System.Data;
-using System.Security.Claims;
 
 namespace ProjectTrackr.Controllers
 {
     public class ProjectController : Controller
     {
-        private Validator validator = new Validator();
+        private Validator validator = new();
 
         private ProjectContainer projectContainer { get; set; }
         private UserContainer userContainer { get; set; }
@@ -33,34 +31,35 @@ namespace ProjectTrackr.Controllers
         // GET: ProjectController/All
         public ActionResult All()
         {
-            userGuid = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            userGuid = User.GetUserId();
 
-            User user = new User();
-            user.id = userGuid;
-            user.username = "";
-            user.email = "";
+            if (userGuid == Guid.Empty)
+                return RedirectToAction("Index", "Login");
 
-            DataTable tableUser = userContainer.GetUserDetails(user);
+            DataTable tableUser = userContainer.GetUserDetails(new User { id = userGuid });
+            if (tableUser.Rows.Count == 0)
+                return NotFound();
 
-            user.id = Guid.Parse(tableUser.Rows[0]["ID"].ToString());
-            user.email = tableUser.Rows[0]["Email"].ToString();
-            user.username = tableUser.Rows[0]["Username"].ToString();
-            user.createdAt = (DateTime)tableUser.Rows[0]["CreatedAt"];
+            DataRow userRow = tableUser.Rows[0];
+            User user = new()
+            {
+                id = userGuid,
+                username = userRow["Username"]?.ToString() ?? string.Empty,
+                email = userRow["Email"]?.ToString() ?? string.Empty,
+                createdAt = userRow["CreatedAt"] != DBNull.Value ? (DateTime)userRow["CreatedAt"] : DateTime.MinValue
+            };
 
             DataTable tableProjects = projectContainer.GetProjects(user);
-            List<Project> projectList = new List<Project>();
 
-            for (int i = 0; i < tableProjects.Rows.Count; i++)
+            List<Project> projectList = [.. tableProjects.AsEnumerable().Select(row => new Project
             {
-                Project project = new Project();
-                project.id = Guid.Parse(tableProjects.Rows[i]["ID"].ToString());
-                project.name = tableProjects.Rows[i]["Name"].ToString();
-                project.description = tableProjects.Rows[i]["Description"].ToString();
-                project.createdAt = (DateTime)tableProjects.Rows[i]["CreatedAt"];
-                project.ownerId = Guid.Parse(tableProjects.Rows[i]["OwnerID"].ToString());
-                project.owner = user;
-                projectList.Add(project);
-            }
+                id = Guid.Parse(row["ID"].ToString() ?? string.Empty),
+                name = row["Name"]?.ToString() ?? string.Empty,
+                description = row["Description"]?.ToString() ?? string.Empty,
+                createdAt = row["CreatedAt"] != DBNull.Value ? (DateTime)row["CreatedAt"] : DateTime.MinValue,
+                ownerId = Guid.Parse(row["OwnerID"].ToString() ?? string.Empty),
+                owner = user
+            })];
 
             return View("ViewAll", projectList);
         }
@@ -69,48 +68,42 @@ namespace ProjectTrackr.Controllers
         public ActionResult Details(Guid id)
         {
             DataTable tableProject = projectContainer.GetProjectDetails(id);
+            if (tableProject.Rows.Count == 0)
+                return NotFound();
 
-            Project project = new Project();
-            List<ActivityLog> activityLogs = new List<ActivityLog>();
+            DataRow projectRow = tableProject.Rows[0];
 
-            foreach (DataRow row in tableProject.Rows)
+            Project project = new()
             {
-                project.id = Guid.Parse(row["ID"].ToString());
-                project.name = row["Name"].ToString();
-                project.description = row["Description"].ToString();
-                project.createdAt = (DateTime)row["CreatedAt"];
-                project.ownerId = Guid.Parse(row["OwnerID"].ToString());
-            }
+                id = Guid.Parse(projectRow["ID"].ToString() ?? String.Empty),
+                name = projectRow["Name"]?.ToString() ?? String.Empty,
+                description = projectRow["Description"]?.ToString() ?? String.Empty,
+                createdAt = projectRow["CreatedAt"] != DBNull.Value ? (DateTime)projectRow["CreatedAt"] : DateTime.MinValue,
+                ownerId = Guid.Parse(projectRow["OwnerID"].ToString() ?? String.Empty)
+            };
 
             DataTable tableActivities = activityLogContainer.GetActivityLogsByProjectId(project.id);
-
-            foreach (DataRow row in tableActivities.Rows)
+            List<ActivityLog> activityLogs = [.. tableActivities.AsEnumerable().Select(row => new ActivityLog
             {
-                activityLogs.Add(new ActivityLog
-                {
-                    id = Guid.Parse(row["ID"].ToString()),
-                    action = row["Action"].ToString(),
-                    createdAt = (DateTime)row["CreatedAt"],
-                    userId = Guid.Parse(row["UserID"].ToString()),
-                    projectId = row["ProjectID"] != DBNull.Value ? Guid.Parse(row["ProjectID"].ToString()) : null,
-                    taskId = row["TaskID"] != DBNull.Value ? Guid.Parse(row["TaskID"].ToString()) : null
-                });
-            }
+                id = Guid.Parse(row["ID"].ToString() ?? String.Empty),
+                action = row["Action"]?.ToString() ?? String.Empty,
+                createdAt = row["CreatedAt"] != DBNull.Value ? (DateTime)row["CreatedAt"] : DateTime.MinValue,
+                userId = Guid.Parse(row["UserID"].ToString() ?? String.Empty),
+                projectId = row["ProjectID"] != DBNull.Value ? Guid.Parse(row["ProjectID"].ToString() ?? String.Empty) : Guid.Empty,
+                taskId = row["TaskID"] != DBNull.Value ? Guid.Parse(row["TaskID"].ToString() ?? String.Empty) : (Guid?)null
+            })];
 
             DataTable tableTasks = taskItemContainer.GetTasks(project.id);
-            List<TaskItem> tasks = new List<TaskItem>();
+            List<TaskItem> tasks = [.. tableTasks.AsEnumerable().Select(row => new TaskItem
+            {
+                id = Guid.Parse(row["ID"].ToString() ?? String.Empty),
+                title = row["title"]?.ToString() ?? String.Empty,
+                description = row["description"]?.ToString() ?? String.Empty,
+                status = (Models.TaskStatus)row["status"],
+                createdAt = row["CreatedAt"] != DBNull.Value ? (DateTime)row["CreatedAt"] : DateTime.MinValue,
+                projectId = row["ProjectID"] != DBNull.Value ? Guid.Parse(row["ProjectID"].ToString() ?? String.Empty) : Guid.Empty
+            })];
 
-            foreach (DataRow row in tableTasks.Rows) {
-                tasks.Add(new TaskItem
-                {
-                    id = Guid.Parse((string)row["ID"].ToString()),
-                    title = row["title"].ToString(),
-                    description = row["description"].ToString(),
-                    status = (Models.TaskStatus)row["status"],
-                    createdAt = (DateTime)row["CreatedAt"],
-                    projectId = (Guid)row["ProjectID"]
-                });
-            }
             project.activityLogs = activityLogs;
             project.tasks = tasks;
 
@@ -128,9 +121,12 @@ namespace ProjectTrackr.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(ProjectViewModel model)
         {
-            userGuid = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            userGuid = User.GetUserId();
 
-            if (!checkInputs(model))
+            if (userGuid == Guid.Empty)
+                return RedirectToAction("Index", "Login");
+
+            if (!CheckInputs(model))
                 return RegisterFailed(model);
             else if (projectContainer.ProjectExists(model.name, userGuid, false) == true)
             {
@@ -139,15 +135,15 @@ namespace ProjectTrackr.Controllers
             }
             else
             {
-                CreateProject(model);
+                CreateProject(model, userGuid);
 
                 return RedirectToAction("All", "Project");
             }
         }
 
-        private bool checkInputs(ProjectViewModel model)
+        private bool CheckInputs(ProjectViewModel model)
         {
-            if (!validator.ValidateStrings(model.name))
+            if (!validator.ValidateString(model.name))
             {
                 ModelState.AddModelError("InvalidString", "Project name format is invalid.");
                 return false;
@@ -156,7 +152,7 @@ namespace ProjectTrackr.Controllers
                 return true;
         }
 
-        private ActionResult RegisterFailed(ProjectViewModel model)
+        private ViewResult RegisterFailed(ProjectViewModel model)
         {
             TempData["Errors"] = ModelState.Values
             .SelectMany(v => v.Errors)
@@ -166,43 +162,41 @@ namespace ProjectTrackr.Controllers
             return View(model);
         }
 
-        private void CreateProject(ProjectViewModel model)
+        private void CreateProject(ProjectViewModel model, Guid userGuid)
         {
-            userGuid = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            DataTable userTable = userContainer.GetUserDetails(new User { id = userGuid });
 
-            User user = new User();
-            user.id = userGuid;
-            user.username = "";
-            user.email = "";
+            User user = new()
+            {
+                id = Guid.Parse(userTable.Rows[0]["ID"].ToString() ?? String.Empty),
+                email = userTable.Rows[0]["Email"].ToString() ?? String.Empty,
+                username = userTable.Rows[0]["Username"].ToString() ?? String.Empty,
+                createdAt = (DateTime)userTable.Rows[0]["CreatedAt"]
+            };
 
-            DataTable table = userContainer.GetUserDetails(user);
-
-            user.id = Guid.Parse(table.Rows[0]["ID"].ToString());
-            user.email = table.Rows[0]["Email"].ToString();
-            user.username = table.Rows[0]["Username"].ToString();
-            user.createdAt = (DateTime)table.Rows[0]["CreatedAt"];
-
-            Project project = new Project();
-            project.id = Guid.NewGuid();
-            project.name = model.name;
-            project.description = model.description;
-            project.createdAt = DateTime.Now;
-            project.ownerId = userGuid;
-            project.owner = user;
+            Project project = new()
+            {
+                id = Guid.NewGuid(),
+                name = model.name,
+                description = model.description ?? string.Empty,
+                createdAt = DateTime.Now,
+                ownerId = userGuid,
+                owner = user
+            };
+            ActivityLog log = new()
+            {
+                id = Guid.NewGuid(),
+                action = $"Created project '{project.name}'.",
+                createdAt = DateTime.Now,
+                userId = userGuid,
+                user = user,
+                project = project,
+                projectId = project.id,
+                task = null,
+                taskId = null
+            };
 
             projectContainer.CreateProject(project);
-
-            ActivityLog log = new ActivityLog();
-            log.id = Guid.NewGuid();
-            log.action = $"Created project '{project.name}'.";
-            log.createdAt = DateTime.Now;
-            log.userId = userGuid;
-            log.user = user;
-            log.project = project;
-            log.projectId = project.id;
-            log.task = null;
-            log.taskId = null;
-
             activityLogContainer.CreateActivityLog(log);
         }
 
@@ -212,21 +206,24 @@ namespace ProjectTrackr.Controllers
         {
             DataTable tableProject = projectContainer.GetProjectDetails(id);
 
-            ProjectViewModel project = new ProjectViewModel();
-            User user = new User();
+            if (tableProject.Rows.Count == 0)
+                return NoContent();
 
-            foreach (DataRow row in tableProject.Rows)
+            DataRow row = tableProject.Rows[0];
+
+            ProjectViewModel project = new()
             {
-                project.id = Guid.Parse(row["ID"].ToString());
-                project.name = row["Name"].ToString();
-                project.description = row["Description"].ToString();
+                id = Guid.Parse(row["ID"].ToString() ?? string.Empty),
+                name = row["Name"].ToString() ?? string.Empty,
+                description = row["Description"].ToString() ?? string.Empty
+            };
 
-                user.id = Guid.Parse(row["OwnerID"].ToString());
-                user.username = "";
-                user.email = "";
-            }
-
-            DataTable tableUser = userContainer.GetUserDetails(user);
+            User user = new()
+            {
+                id = Guid.Parse(row["OwnerID"].ToString() ?? string.Empty),
+                username = "",
+                email = ""
+            };
 
             return View(project);
         }
@@ -236,9 +233,12 @@ namespace ProjectTrackr.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(ProjectViewModel model)
         {
-            userGuid = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            userGuid = User.GetUserId();
 
-            if (!validator.ValidateStrings(model.name))
+            if (userGuid == Guid.Empty)
+                return RedirectToAction("Index", "Login");
+
+            if (!validator.ValidateString(model.name))
             {
                 ModelState.AddModelError("InvalidString", "Project name format is invalid.");
                 return RegisterFailed(model);
@@ -250,20 +250,24 @@ namespace ProjectTrackr.Controllers
             }
             else
             {
-                Project project = new Project();
-                project.name = model.name;
-                project.description = model.description;
-                project.id = model.id;
+                Project project = new()
+                {
+                    name = model.name,
+                    description = model.description ?? string.Empty,
+                    id = model.id
+                };
 
-                ActivityLog log = new ActivityLog();
-                log.id = Guid.NewGuid();
-                log.action = $"Updated project contents, name and/or description.";
-                log.createdAt = DateTime.Now;
-                log.userId = userGuid;
-                log.project = project;
-                log.projectId = project.id;
-                log.task = null;
-                log.taskId = null;
+                ActivityLog log = new()
+                {
+                    id = Guid.NewGuid(),
+                    action = $"Updated project contents, name and/or description.",
+                    createdAt = DateTime.Now,
+                    userId = userGuid,
+                    project = project,
+                    projectId = project.id,
+                    task = null,
+                    taskId = null
+                };
 
                 projectContainer.EditProject(project);
                 activityLogContainer.CreateActivityLog(log);

@@ -55,12 +55,12 @@ namespace ProjectTrackr.Tools
             }
         }
 
-        public bool ValidateStrings(string username)
+        public bool ValidateString(string stringContent)
         {
-            // Validate strings (mostly letters, 3 min)
+            // Validate string (mostly letters, 3 min)
 
             Regex regex = new Regex(@"^(?=.*[a-zA-Z\d].*)[a-zA-Z\d!@#$%&* ]{3,}$");
-            bool isValid = regex.IsMatch(username.Trim());
+            bool isValid = regex.IsMatch(stringContent.Trim());
 
             if (!isValid)
             {

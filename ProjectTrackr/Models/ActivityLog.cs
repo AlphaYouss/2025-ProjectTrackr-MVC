@@ -13,12 +13,12 @@ namespace ProjectTrackr.Models
         public DateTime createdAt { get; set; }
         [Required]
         public Guid userId { get; set; }
-        public User user { get; set; }
+        public User? user { get; set; }
 
         public Guid? projectId { get; set; }
-        public Project project { get; set; }
+        public Project? project { get; set; }
 
         public Guid? taskId { get; set; }
-        public TaskItem task { get; set; }
+        public TaskItem? task { get; set; }
     }
 }

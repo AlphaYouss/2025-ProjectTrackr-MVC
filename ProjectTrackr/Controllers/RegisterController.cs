@@ -10,7 +10,7 @@ namespace ProjectTrackr.Controllers
 {
     public class RegisterController : Controller
     {
-        private Validator validator = new Validator();
+        private Validator validator = new();
 
         private UserContainer userContainer { get; set; }
 
@@ -30,7 +30,7 @@ namespace ProjectTrackr.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(RegisterViewModel model)
         {
-            if (!checkInputs(model))
+            if (!CheckInputs(model))
                 return RegisterFailed();
             else if (userContainer.UserNameExists(model.username) == true)
             {
@@ -50,7 +50,7 @@ namespace ProjectTrackr.Controllers
             }
         }
 
-        private bool checkInputs(RegisterViewModel model)
+        private bool CheckInputs(RegisterViewModel model)
         {
             if (model.password != model.passwordRepeat)
             {
@@ -76,7 +76,7 @@ namespace ProjectTrackr.Controllers
                 return true;
         }
 
-        private ActionResult RegisterFailed()
+        private RedirectToActionResult RegisterFailed()
         {
             TempData["Errors"] = ModelState.Values
             .SelectMany(v => v.Errors)
@@ -90,7 +90,7 @@ namespace ProjectTrackr.Controllers
         {
             string hashedPassword = new PasswordHasher<string>().HashPassword(username, password);
 
-            User user = new User
+            User user = new()
             {
                 username = username,
                 email = email,

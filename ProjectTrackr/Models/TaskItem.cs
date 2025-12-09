@@ -21,6 +21,5 @@ namespace ProjectTrackr.Models
 
         [Required]
         public Guid projectId { get; set; }
-        public Project project { get; set; }
     }
 }

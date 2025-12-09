@@ -12,10 +12,9 @@ namespace ProjectTrackr.Controllers
 {
     public class TaskController : Controller
     {
-        private Validator validator = new Validator();
+        private Validator validator = new();
 
         private ProjectContainer projectContainer { get; set; }
-        private UserContainer userContainer { get; set; }
         private ActivityLogContainer activityLogContainer { get; set; }
         private TaskItemContainer taskItemContainer { get; set; }
 
@@ -24,7 +23,6 @@ namespace ProjectTrackr.Controllers
         public TaskController(IConfiguration configuration)
         {
             projectContainer = new ProjectContainer(new ProjectDAL(configuration));
-            userContainer = new UserContainer(new UserDAL(configuration));
             activityLogContainer = new ActivityLogContainer(new ActivityLogDAL(configuration));
             taskItemContainer = new TaskItemContainer(new TaskItemDAL(configuration));
         }
@@ -32,18 +30,20 @@ namespace ProjectTrackr.Controllers
         // GET: TaskController
         public ActionResult View(Guid id)
         {
-            TaskItem taskItem = new TaskItem();
+            TaskItem taskItem = new();
             DataTable tableTasks = taskItemContainer.GetTaskDetails(id);
-            
-            for (int i = 0; i < tableTasks.Rows.Count; i++)
-            {
-                taskItem.id = Guid.Parse(tableTasks.Rows[i]["ID"].ToString());
-                taskItem.title = tableTasks.Rows[i]["Title"].ToString();
-                taskItem.description = tableTasks.Rows[i]["Description"].ToString();
-                taskItem.status = (Models.TaskStatus)tableTasks.Rows[i]["Status"];
-                taskItem.createdAt = (DateTime)tableTasks.Rows[i]["CreatedAt"];
-                taskItem.projectId = Guid.Parse(tableTasks.Rows[i]["ID"].ToString());
-            }
+
+            if (tableTasks.Rows.Count == 0)
+                return NoContent();
+
+            DataRow row = tableTasks.Rows[0];
+
+            taskItem.id = Guid.Parse(row["ID"].ToString() ?? string.Empty);
+            taskItem.title = row["Title"].ToString() ?? string.Empty;
+            taskItem.description = row["Description"].ToString() ?? string.Empty;
+            taskItem.status = (Models.TaskStatus)row["Status"];
+            taskItem.createdAt = (DateTime)row["CreatedAt"];
+            taskItem.projectId = Guid.Parse(row["ProjectId"].ToString() ?? string.Empty);
 
             return View(taskItem);
         }
@@ -52,7 +52,7 @@ namespace ProjectTrackr.Controllers
         [HttpGet]
         public ActionResult Create(Guid id)
         {
-            TaskItemViewModel taskItemViewModel = new TaskItemViewModel
+            TaskItemViewModel taskItemViewModel = new()
             {
                 projectId = id,
             };
@@ -65,7 +65,10 @@ namespace ProjectTrackr.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(TaskItemViewModel model)
         {
-            userGuid = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            userGuid = User.GetUserId();
+
+            if (userGuid == Guid.Empty)
+                return RedirectToAction("Index", "Login");
 
             if (!checkInputs(model))
                 return RegisterFailed(model);
@@ -76,15 +79,17 @@ namespace ProjectTrackr.Controllers
             }
             else
             {
-                CreateTask(model);
+                if (userGuid == Guid.Empty)
+                    return RedirectToAction("Index", "Login");
 
+                CreateTask(model, userGuid);
                 return RedirectToAction("Details", "Project", new {id = model.projectId});
             }
         }
 
         private bool checkInputs(TaskItemViewModel model)
         {
-            if (!validator.ValidateStrings(model.title))
+            if (!validator.ValidateString(model.title))
             {
                 ModelState.AddModelError("InvalidString", "Task title format is invalid.");
                 return false;
@@ -93,7 +98,7 @@ namespace ProjectTrackr.Controllers
                 return true;
         }
 
-        private ActionResult RegisterFailed(TaskItemViewModel model)
+        private ViewResult RegisterFailed(TaskItemViewModel model)
         {
             TempData["Errors"] = ModelState.Values
             .SelectMany(v => v.Errors)
@@ -103,50 +108,48 @@ namespace ProjectTrackr.Controllers
             return View(model);
         }
 
-        private void CreateTask(TaskItemViewModel model)
+        private void CreateTask(TaskItemViewModel model, Guid userGuid)
         {
-            userGuid = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            TaskItem item = new()
+            {
+                id = Guid.NewGuid(),
+                title = model.title,
+                projectId = model.projectId,
+                status = (Models.TaskStatus)model.status,
+                description = model.description,
+                createdAt = DateTime.Now
+            };
 
-            TaskItem item = new TaskItem();
-            item.id = Guid.NewGuid();
-            item.title = model.title;
-            item.projectId = model.projectId;
-            item.status = (Models.TaskStatus)model.status;
-            item.description = model.description;   
-            item.createdAt = DateTime.Now;
+            ActivityLog activityLog = new()
+            {
+                id = Guid.NewGuid(),
+                createdAt = DateTime.Now,
+                userId = userGuid,
+                user = null,
+                projectId = model.projectId,
+                taskId = item.id,
+                task = item,
+                action = $"Created task '{item.title}'."
+            };
 
             taskItemContainer.CreateTaskItem(item);
-
-            ActivityLog activityLog = new ActivityLog();
-            activityLog.id = Guid.NewGuid();
-            activityLog.createdAt = DateTime.Now;
-            activityLog.userId = userGuid;
-            activityLog.user = null;
-            activityLog.projectId = model.projectId;
-            activityLog.taskId = item.id;
-            activityLog.task = item;
-            activityLog.action = $"Created task '{item.title}'.";
-
             activityLogContainer.CreateActivityLog(activityLog);
         }
-
 
         // GET: TaskController/Edit/(ID)
         public ActionResult Edit(Guid id)
         {
-            DataTable tableTask = taskItemContainer.GetTaskDetails(id);
+            DataRow row = taskItemContainer.GetTaskDetails(id).Rows[0];
 
-            TaskItemViewModel taskItemViewModel = new TaskItemViewModel();
-
-            for (int i = 0; i < tableTask.Rows.Count; i++)
+            TaskItemViewModel taskItemViewModel = new()
             {
-                taskItemViewModel.id = Guid.Parse(tableTask.Rows[i]["ID"].ToString());
-                taskItemViewModel.title = tableTask.Rows[i]["Title"].ToString();
-                taskItemViewModel.description = tableTask.Rows[i]["Description"].ToString();
-                taskItemViewModel.status = (TaskItemViewModel.TaskStatus)(Models.TaskStatus)tableTask.Rows[i]["Status"];
-                taskItemViewModel.createdAt = (DateTime)tableTask.Rows[i]["CreatedAt"];
-                taskItemViewModel.projectId = Guid.Parse(tableTask.Rows[i]["ProjectId"].ToString());
-            }
+                id = Guid.Parse(Convert.ToString(row["ID"]) ?? String.Empty),
+                title = Convert.ToString(row["Title"]) ?? String.Empty,
+                description = Convert.ToString(row["Description"]) ?? String.Empty,
+                status = (TaskItemViewModel.TaskStatus)(Models.TaskStatus)row["Status"],
+                createdAt = row.Field<DateTime>("CreatedAt"),
+                projectId = Guid.Parse(Convert.ToString(row["ProjectId"]) ?? String.Empty)
+            };
 
             return View(taskItemViewModel);
         }
@@ -156,9 +159,9 @@ namespace ProjectTrackr.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(TaskItemViewModel model)
         {
-            userGuid = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            userGuid = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? String.Empty);
 
-            if (!validator.ValidateStrings(model.title))
+            if (!validator.ValidateString(model.title))
             {
                 ModelState.AddModelError("InvalidString", "Task name format is invalid.");
                 return RegisterFailed(model);
@@ -170,23 +173,27 @@ namespace ProjectTrackr.Controllers
             }
             else
             {
-                TaskItem taskItem = new TaskItem();
-                taskItem.id = model.id;
-                taskItem.title = model.title;
-                taskItem.projectId = model.projectId;
-                taskItem.status = (Models.TaskStatus)model.status;
-                taskItem.description = model.description;
-                taskItem.createdAt = DateTime.Now;
+                TaskItem taskItem = new()
+                {
+                    id = model.id,
+                    title = model.title,
+                    projectId = model.projectId,
+                    status = (Models.TaskStatus)model.status,
+                    description = model.description,
+                    createdAt = DateTime.Now
+                };
 
-                ActivityLog log = new ActivityLog();
-                log.id = Guid.NewGuid();
-                log.action = $"Updated task contents, name and/or description.";
-                log.createdAt = DateTime.Now;
-                log.userId = userGuid;
-                log.project = null;
-                log.projectId = taskItem.projectId;
-                log.task = null;
-                log.taskId = taskItem.id;
+                ActivityLog log = new()
+                {
+                    id = Guid.NewGuid(),
+                    action = $"Updated task contents, name and/or description.",
+                    createdAt = DateTime.Now,
+                    userId = userGuid,
+                    project = null,
+                    projectId = taskItem.projectId,
+                    task = null,
+                    taskId = taskItem.id
+                };
 
                 taskItemContainer.EditTask(taskItem);
                 activityLogContainer.CreateActivityLog(log);

@@ -107,7 +107,7 @@ namespace ProjectTrackr.DALs
 
             databasehandler.OpenConnection();
 
-            SqlDataAdapter adapt = new SqlDataAdapter(command);
+            SqlDataAdapter adapt = new(command);
             adapt.Fill(table);
 
             databasehandler.CloseConnection();

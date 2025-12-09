@@ -14,11 +14,11 @@ namespace ProjectTrackr.Controllers
 {
     public class LoginController : Controller
     {
-        private Validator validator = new Validator();
+        private Validator validator = new();
 
         private UserContainer userContainer { get; set; }
 
-        private string usernameEmail;
+        private string usernameEmail { get; set; } = "";
 
         public LoginController(IConfiguration configuration)
         {
@@ -46,14 +46,14 @@ namespace ProjectTrackr.Controllers
                 ModelState.AddModelError("UsernameEmailNotKnown", "Username or email does not exist.");
                 return RegisterFailed();
             }
-            else if (isValidLogin(model.usernameOrEmail, model.password) == false)
+            else if (IsValidLogin(model.usernameOrEmail, model.password) == false)
             {
                 ModelState.AddModelError("InvalidLogin", "Combination of email/username and given password is incorrect.");
                 return RegisterFailed();
             }
             else
             {
-                return await setSignedIn();
+                return await SetSignedIn();
             }
         }
 
@@ -67,9 +67,9 @@ namespace ProjectTrackr.Controllers
             return RedirectToAction("Index");
         }
 
-        private bool isValidLogin(string usernameEmail, string password)
+        private bool IsValidLogin(string usernameEmail, string password)
         {
-            PasswordHasher<string> hasher = new PasswordHasher<string>();
+            PasswordHasher<string> hasher = new();
             string hashedPassword = userContainer.FetchPassword(usernameEmail);
 
             PasswordVerificationResult result = hasher.VerifyHashedPassword(null, hashedPassword, password);
@@ -84,30 +84,31 @@ namespace ProjectTrackr.Controllers
                 return false;
         }
 
-        public async Task<IActionResult> setSignedIn()
+        public async Task<IActionResult> SetSignedIn()
         {
-            User user = new User();
-            user.email = this.usernameEmail;
-            user.username = this.usernameEmail;
+            User user = new()
+            {
+                email = usernameEmail,
+                username = usernameEmail
+            };
 
             DataTable table = userContainer.GetUserDetails(user);
 
-            user.id = Guid.Parse(table.Rows[0]["ID"].ToString());
-            user.email = table.Rows[0]["Email"].ToString();
-            user.username = table.Rows[0]["Username"].ToString();
+            user.id = Guid.Parse(table.Rows[0]["ID"].ToString() ?? String.Empty);
+            user.email = table.Rows[0]["Email"].ToString() ?? String.Empty;
+            user.username = table.Rows[0]["Username"].ToString() ?? String.Empty;
             user.createdAt = (DateTime)table.Rows[0]["CreatedAt"];
 
-            List<Claim> claims = new List<Claim>
-            {
-                    new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
-                    new Claim(ClaimTypes.Name, user.username),
-                    new Claim(ClaimTypes.Email, user.email),
-                    new Claim("CreatedAt", user.createdAt.ToString())
-            };
+            List<Claim> claims =
+            [
+                    new(ClaimTypes.NameIdentifier, user.id.ToString()),
+                    //new(ClaimTypes.Name, user.username),
+                    //new(ClaimTypes.Email, user.email),
+            ];
 
-            ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            ClaimsIdentity identity = new(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-            AuthenticationProperties properties = new AuthenticationProperties
+            AuthenticationProperties properties = new()
             {
                 AllowRefresh = true,
                 ExpiresUtc = DateTime.Now.AddDays(1),

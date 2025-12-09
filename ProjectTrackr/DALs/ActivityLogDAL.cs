@@ -32,7 +32,6 @@ namespace ProjectTrackr.DALs
             command.Parameters.AddWithValue("ProjectId", activityLog.projectId ?? (object)DBNull.Value);
             command.Parameters.AddWithValue("TaskId", activityLog.taskId ?? (object)DBNull.Value);
 
-
             databasehandler.OpenConnection();
             command.ExecuteNonQuery();
             databasehandler.CloseConnection();
@@ -45,7 +44,7 @@ namespace ProjectTrackr.DALs
 
             databasehandler.OpenConnection();
 
-            SqlDataAdapter adapt = new SqlDataAdapter(command);
+            SqlDataAdapter adapt = new(command);
             adapt.Fill(table);
 
             databasehandler.CloseConnection();

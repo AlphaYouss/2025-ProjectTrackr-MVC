@@ -13,9 +13,5 @@ namespace ProjectTrackr.Models
         [Required]
         public string passwordHash { get; set; }
         public DateTime createdAt { get; set; }
-
-        public ICollection<Project> projects { get; set; }
-        public ICollection<TaskItem> tasks { get; set; }
-        public ICollection<ActivityLog> activityLogs { get; set; }
     }
 }
