@@ -18,6 +18,8 @@ namespace ProjectTrackr.Controllers
         private UserContainer userContainer { get; set; }
         private ActivityLogContainer activityLogContainer { get; set; }
 
+        private TaskItemContainer taskItemContainer { get; set; }
+
         private Guid userGuid { get; set; }
 
         public ProjectController(IConfiguration configuration)
@@ -25,6 +27,7 @@ namespace ProjectTrackr.Controllers
             projectContainer = new ProjectContainer(new ProjectDAL(configuration));
             userContainer = new UserContainer(new UserDAL(configuration));
             activityLogContainer = new ActivityLogContainer(new ActivityLogDAL(configuration));
+            taskItemContainer = new TaskItemContainer(new TaskItemDAL(configuration));
         }
 
         // GET: ProjectController/All
@@ -94,7 +97,22 @@ namespace ProjectTrackr.Controllers
                 });
             }
 
+            DataTable tableTasks = taskItemContainer.GetTasks(project.id);
+            List<TaskItem> tasks = new List<TaskItem>();
+
+            foreach (DataRow row in tableTasks.Rows) {
+                tasks.Add(new TaskItem
+                {
+                    id = Guid.Parse((string)row["ID"].ToString()),
+                    title = row["title"].ToString(),
+                    description = row["description"].ToString(),
+                    status = (Models.TaskStatus)row["status"],
+                    createdAt = (DateTime)row["CreatedAt"],
+                    projectId = (Guid)row["ProjectID"]
+                });
+            }
             project.activityLogs = activityLogs;
+            project.tasks = tasks;
 
             return View("View", project);
         }
@@ -114,7 +132,7 @@ namespace ProjectTrackr.Controllers
 
             if (!checkInputs(model))
                 return RegisterFailed(model);
-            else if (projectContainer.ProjectExists(model.name, userGuid) == true)
+            else if (projectContainer.ProjectExists(model.name, userGuid, false) == true)
             {
                 ModelState.AddModelError("ProjectExists", "Project name is already taken.");
                 return RegisterFailed(model);
@@ -225,7 +243,7 @@ namespace ProjectTrackr.Controllers
                 ModelState.AddModelError("InvalidString", "Project name format is invalid.");
                 return RegisterFailed(model);
             }
-            else if (projectContainer.ProjectExists(model.name, userGuid) != false)
+            else if (projectContainer.ProjectExists(model.name, userGuid, true) != false)
             {
                 ModelState.AddModelError("ProjectExists", "Project already exists.");
                 return RegisterFailed(model);

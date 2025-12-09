@@ -16,7 +16,6 @@ namespace ProjectTrackr.Models
 
         public ICollection<Project> projects { get; set; }
         public ICollection<TaskItem> tasks { get; set; }
-        public ICollection<Comment> comments { get; set; }
         public ICollection<ActivityLog> activityLogs { get; set; }
     }
 }

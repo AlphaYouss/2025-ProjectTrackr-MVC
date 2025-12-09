@@ -66,7 +66,7 @@ namespace ProjectTrackr.DALs
             return table;
         }
 
-        public bool ProjectExists(string projectName, Guid projectId)
+        public bool ProjectExists(string projectName, Guid projectId, bool editProject)
         {
             command = new SqlCommand("SELECT COUNT(*) FROM [Projects] WHERE Name = @Name AND OwnerId = @OwnerId", databasehandler.GetConnection());
             command.Parameters.AddWithValue("Name", projectName);
@@ -76,7 +76,7 @@ namespace ProjectTrackr.DALs
             int count = Convert.ToInt32(command.ExecuteScalar());
             databasehandler.CloseConnection();
 
-            if (count > 1)
+            if (count >= 1 && editProject == false)
                 return true;
             else
                 return false;

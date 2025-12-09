@@ -27,9 +27,9 @@ namespace ProjectTrackr.Containers
             return projectDAL.GetProjects(user);
         }
 
-        public bool ProjectExists(string projectName, Guid projectId)
+        public bool ProjectExists(string projectName, Guid projectId, bool editProject)
         {
-            return projectDAL.ProjectExists(projectName, projectId);
+            return projectDAL.ProjectExists(projectName, projectId, editProject);
         }
 
         public void DeleteProject(Guid projectId)

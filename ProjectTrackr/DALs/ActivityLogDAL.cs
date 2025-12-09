@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using ProjectTrackr.Interfaces;
 using ProjectTrackr.Models;
 using System.Data;

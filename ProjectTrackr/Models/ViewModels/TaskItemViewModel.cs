@@ -1,25 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
-namespace ProjectTrackr.Models
+namespace ProjectTrackr.Models.ViewModels
 {
-    public enum TaskStatus
+    public class TaskItemViewModel
     {
-        ToDo,
-        InProgress,
-        Done
-    }
+        public enum TaskStatus
+        {
+            ToDo,
+            InProgress,
+            Done
+        }
 
-    public class TaskItem
-    {
-        [Key]
+        [AllowNull]
         public Guid id { get; set; }
-        [Required, MaxLength(200)]
+        [Required]
         public string title { get; set; }
+        [StringLength(2000)]
         public string description { get; set; }
+        [Required]
         public TaskStatus status { get; set; } = TaskStatus.ToDo;
         public DateTime createdAt { get; set; } = DateTime.Now;
-
-        [Required]
         public Guid projectId { get; set; }
         public Project project { get; set; }
     }

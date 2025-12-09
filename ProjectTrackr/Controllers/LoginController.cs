@@ -112,7 +112,7 @@ namespace ProjectTrackr.Controllers
                 AllowRefresh = true,
                 ExpiresUtc = DateTime.Now.AddDays(1),
                 IsPersistent = true,
-                RedirectUri = "/Project/All"
+                RedirectUri = "/Login"
             };
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), properties);
